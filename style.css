@@ -94,7 +94,7 @@ button:hover{
 /* ================= INDEX ================= */
 
 #content{
-    min-height:100vh;   /* FIXED */
+    min-height:100vh;   
     width:50%;
     padding-top:280px;
     margin-left:80px;
@@ -162,7 +162,7 @@ button:hover{
     padding:100px 50px;
     background:rgba(0,0,0,0.75);
     text-align:center;
-    margin-top:80px;   /* FIXED */
+    margin-top:80px;   
 }
 
 #features h2{
@@ -394,7 +394,7 @@ text-decoration:none;
     padding:40px;
 }
 
-/* CARD WRAPPER */
+
 .crime-card{
     width:400px;
     height:350px;
@@ -402,7 +402,7 @@ text-decoration:none;
     position:relative;
 }
 
-/* INNER FLIP */
+
 .crime-card-inner{
     position:relative;
     width:100%;
@@ -412,7 +412,7 @@ text-decoration:none;
     will-change: transform;
 }
 
-/* HOVER EFFECT */
+
 .crime-card:hover{
     z-index:10;
 }
@@ -421,7 +421,7 @@ text-decoration:none;
     transform:rotateY(180deg);
 }
 
-/* FRONT + BACK COMMON */
+
 .crime-card-front,
 .crime-card-back{
     position:absolute;
@@ -438,7 +438,7 @@ text-decoration:none;
 }
 
 
-/* BACK SIDE */
+
 .crime-card-back{
     background:rgba(0,0,0,0.85);
     color:white;
@@ -452,7 +452,7 @@ text-decoration:none;
 .crime-card-front img{
     width:100%;
     height:100%;
-    object-fit:cover;   /* key property */
+    object-fit:cover;   
     position:absolute;
     top:0;
     left:0;
@@ -484,8 +484,6 @@ text-decoration:none;
     grid-template-columns:repeat(2, 1fr);
     gap:15px;
     padding:15px;
-
-    /* smooth entry */
     animation:fadeGrid 0.6s ease;
 }
 
@@ -514,14 +512,14 @@ text-decoration:none;
     min-height:110px;
     transition:all 0.35s ease;
 
-    /* animation base */
+
     opacity:0;
     transform:translateY(20px);
     animation:fadeUp 0.6s ease forwards;
 }
 
 
-/* stagger animation (nice dashboard feel) */
+
 .tool-box:nth-child(1){animation-delay:0.05s;}
 .tool-box:nth-child(2){animation-delay:0.1s;}
 .tool-box:nth-child(3){animation-delay:0.15s;}
@@ -538,7 +536,7 @@ text-decoration:none;
     }
 }
 
-/* hover effect (modern cyber lift) */
+
 .tool-box:hover{
     transform:translateY(-6px) scale(1.02);
     border-color:#00ffcc;
