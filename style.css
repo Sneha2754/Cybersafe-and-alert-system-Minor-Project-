@@ -704,8 +704,7 @@ h1{
      left: 500px;
     bottom: -700px;
     position: absolute;
-    animation: floatRobot 4s ease-in-out infinite,
-               
+    animation: floatRobot 4s ease-in-out infinite;
     filter: drop-shadow(0 0 10px #38bdf8);
     transition: transform 0.3s ease;
 }
