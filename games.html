@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberSafe – Security Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050b18;
+  --surface: #0a1628;
+  --card: #0d1f3c;
+  --border: #1a3a6e;
+  --cyan: #00f5ff;
+  --green: #39ff14;
+  --red: #ff2952;
+  --orange: #ff8c00;
+  --purple: #a855f7;
+  --yellow: #ffe600;
+  --text: #c8d8f0;
+  --text-dim: #5a7a9a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Exo 2',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── STARFIELD ── */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.1;}50%{opacity:.9;}}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;right:0;z-index:100;
+  display:flex;align-items:center;gap:8px;
+  padding:14px 28px;
+  background:rgba(5,11,24,.85);
+  backdrop-filter:blur(12px);
+  border-bottom-left-radius:16px;
+  border:1px solid var(--border);
+  border-top:none;border-right:none;
+}
+nav a{
+  font-family:'Orbitron',sans-serif;
+  font-size:.7rem;letter-spacing:.12em;
+  color:var(--cyan);
+  text-decoration:none;
+  padding:7px 16px;
+  border:1px solid var(--cyan);
+  border-radius:6px;
+  transition:.2s;
+  white-space:nowrap;
+}
+nav a:hover{background:var(--cyan);color:var(--bg);}
+.nav-title{font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:.2em;color:var(--text-dim);margin-right:8px;}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:1;
+  text-align:center;
+  padding:120px 20px 60px;
+}
+.hero h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2rem,5vw,3.8rem);
+  font-weight:900;
+  letter-spacing:.05em;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+  animation:fadedown .7s ease both;
+}
+.hero p{color:var(--text-dim);font-size:1.05rem;animation:fadedown .7s .2s ease both;opacity:0;}
+@keyframes fadedown{from{opacity:0;transform:translateY(-18px);}to{opacity:1;transform:none;}}
+
+/* ── GRID ── */
+.games-grid{
+  position:relative;z-index:1;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:22px;
+  max-width:1400px;
+  margin:0 auto;
+  padding:20px 28px 80px;
+}
+.game-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+  animation:cardin .5s ease both;
+}
+@keyframes cardin{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+.game-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 0 30px rgba(0,245,255,.15);
+  border-color:var(--cyan);
+}
+.card-header{
+  padding:18px 20px 12px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border);
+}
+.card-icon{
+  width:46px;height:46px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;flex-shrink:0;
+}
+.card-title{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:.1em;color:var(--cyan);}
+.card-desc{font-size:.78rem;color:var(--text-dim);margin-top:3px;}
+.game-area{
+  flex:1;padding:16px;
+  display:flex;flex-direction:column;gap:10px;
+  min-height:200px;
+}
+.btn{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.8rem;letter-spacing:.08em;
+  border:none;border-radius:8px;cursor:pointer;
+  padding:9px 18px;transition:.2s;
+}
+.btn-primary{background:var(--cyan);color:var(--bg);}
+.btn-primary:hover{background:#00c4cc;}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-success{background:var(--green);color:var(--bg);}
+.btn-warn{background:var(--orange);color:var(--bg);}
+.btn-purple{background:var(--purple);color:#fff;}
+.score-badge{
+  font-family:'Share Tech Mono',monospace;font-size:.75rem;
+  padding:4px 10px;border-radius:20px;
+  background:rgba(0,245,255,.1);border:1px solid var(--cyan);
+  color:var(--cyan);display:inline-block;
+}
+.feedback{font-size:.8rem;min-height:1.2em;font-family:'Share Tech Mono',monospace;}
+.feedback.good{color:var(--green);}
+.feedback.bad{color:var(--red);}
+.feedback.info{color:var(--cyan);}
+input[type=text],input[type=password],input[type=number]{
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.8rem;
+  padding:8px 12px;border-radius:8px;outline:none;width:100%;
+  transition:.2s;
+}
+input:focus{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,245,255,.2);}
+progress{width:100%;height:8px;border-radius:4px;border:none;overflow:hidden;}
+progress::-webkit-progress-bar{background:var(--surface);}
+progress::-webkit-progress-value{background:var(--cyan);transition:.3s;}
+.tag{
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;display:inline-block;margin-top:4px;
+}
+.tag-easy{background:rgba(57,255,20,.12);color:var(--green);border:1px solid var(--green);}
+.tag-med{background:rgba(255,140,0,.12);color:var(--orange);border:1px solid var(--orange);}
+.tag-hard{background:rgba(255,41,82,.12);color:var(--red);border:1px solid var(--red);}
+
+/* PASSWORD STRENGTH BAR */
+.pw-bar{height:6px;border-radius:3px;width:0%;transition:.4s;margin-top:6px;}
+/* CIPHER */
+.cipher-display{
+  font-family:'Share Tech Mono',monospace;font-size:1.1rem;letter-spacing:.18em;
+  padding:10px;background:var(--surface);border-radius:8px;
+  color:var(--yellow);word-break:break-all;text-align:center;min-height:44px;
+}
+/* PHISHING */
+.ph-url{
+  font-family:'Share Tech Mono',monospace;font-size:.75rem;
+  padding:8px 12px;background:var(--surface);border-radius:8px;
+  color:var(--text);margin-bottom:6px;word-break:break-all;
+  border:1px solid var(--border);
+}
+/* FIREWALL */
+.fw-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:6px 0;}
+.fw-cell{
+  aspect-ratio:1;border-radius:4px;cursor:pointer;
+  transition:.15s;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;border:1px solid transparent;
+}
+/* MAZE */
+#mazeCanvas{border:2px solid var(--border);border-radius:8px;display:block;margin:0 auto;}
+/* BINARY */
+.bin-display{font-family:'Share Tech Mono',monospace;font-size:1.3rem;letter-radius:.1em;color:var(--green);text-align:center;letter-spacing:.12em;}
+/* MATCH */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.match-item{
+  font-size:.72rem;padding:7px 10px;background:var(--surface);
+  border:1px solid var(--border);border-radius:8px;cursor:pointer;
+  text-align:center;transition:.2s;font-family:'Share Tech Mono',monospace;
+}
+.match-item.selected{border-color:var(--cyan);background:rgba(0,245,255,.1);}
+.match-item.matched{border-color:var(--green);background:rgba(57,255,20,.1);color:var(--green);cursor:default;}
+/* TIMER */
+.timer-bar{height:5px;background:var(--green);border-radius:3px;transition:width .1s linear,background .5s;}
+/* WORD SCRAMBLE */
+.letter-box{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:32px;height:36px;margin:2px;border:1px solid var(--border);
+  border-radius:6px;font-family:'Orbitron',sans-serif;font-size:.9rem;
+  background:var(--surface);cursor:pointer;transition:.15s;
+  color:var(--cyan);
+}
+.letter-box.placed{border-color:var(--green);color:var(--green);}
+/* SEQUENCE */
+.seq-btn{
+  width:44px;height:44px;border-radius:8px;cursor:pointer;
+  border:2px solid var(--border);transition:.2s;font-size:1.1rem;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.seq-btn.lit{box-shadow:0 0 20px currentColor;transform:scale(1.15);}
+/* NETWORK MAP */
+.net-node{
+  position:absolute;width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  border:2px solid var(--border);cursor:pointer;transition:.2s;
+  background:var(--card);
+}
+.net-node.infected{border-color:var(--red);background:rgba(255,41,82,.2);animation:pulse-red .6s ease-in-out infinite alternate;}
+.net-node.clean{border-color:var(--green);background:rgba(57,255,20,.15);}
+@keyframes pulse-red{from{box-shadow:0 0 4px var(--red);}to{box-shadow:0 0 16px var(--red);}}
+.net-map{position:relative;height:160px;background:var(--surface);border-radius:10px;overflow:hidden;}
+/* SOCIAL ENG */
+.se-option{
+  width:100%;text-align:left;padding:9px 12px;margin:4px 0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;color:var(--text);cursor:pointer;font-size:.78rem;
+  transition:.2s;font-family:'Exo 2',sans-serif;
+}
+.se-option:hover{border-color:var(--cyan);}
+.se-option.correct{border-color:var(--green)!important;background:rgba(57,255,20,.1);}
+.se-option.wrong{border-color:var(--red)!important;background:rgba(255,41,82,.1);}
+
+/* WHACK MALWARE */
+.wm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.wm-hole{
+  aspect-ratio:1;border-radius:10px;background:var(--surface);
+  border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;transition:.1s;
+  user-select:none;
+}
+.wm-hole.active{background:rgba(255,41,82,.2);border-color:var(--red);transform:scale(1.05);}
+.wm-hole:active{transform:scale(.93);}
+
+/* ENCRYPTION SCRAMBLE */
+.enc-letters{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
+
+/* TOKEN HUNT */
+.token-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;}
+.token-cell{
+  aspect-ratio:1;border-radius:6px;background:var(--surface);
+  border:1px solid var(--border);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  transition:.15s;
+}
+.token-cell:hover{border-color:var(--cyan);}
+.token-cell.revealed{cursor:default;}
+.token-cell.found{border-color:var(--green);background:rgba(57,255,20,.15);}
+.token-cell.empty{border-color:var(--red);background:rgba(255,41,82,.1);}
+
+/* DDOS CLICKER */
+.ddos-server{
+  width:80px;height:80px;border-radius:50%;margin:0 auto;
+  border:3px solid var(--cyan);display:flex;align-items:center;
+  justify-content:center;font-size:2rem;transition:.15s;cursor:pointer;
+  background:var(--surface);
+}
+.ddos-server.hit{border-color:var(--red);box-shadow:0 0 20px var(--red);}
+
+/* SQL INJECTION */
+.sql-code{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--yellow);
+  background:var(--surface);padding:10px;border-radius:8px;margin:6px 0;
+  border:1px solid var(--border);}
+  
+/* VIRUS SCANNER */
+.vs-bar{height:18px;background:var(--surface);border-radius:4px;overflow:hidden;margin:6px 0;}
+.vs-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));width:0%;transition:.05s linear;border-radius:4px;}
+.vs-files{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+.vs-file{font-size:.65rem;padding:4px 8px;border-radius:4px;font-family:'Share Tech Mono',monospace;border:1px solid var(--border);background:var(--surface);}
+.vs-file.clean{border-color:var(--green);color:var(--green);}
+.vs-file.virus{border-color:var(--red);color:var(--red);animation:blink .4s step-start infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* KEYLOGGER DETECTIVE */
+.kd-stream{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--text-dim);
+  background:var(--surface);padding:8px;border-radius:8px;height:50px;overflow:hidden;
+  white-space:nowrap;border:1px solid var(--border);}
+
+/* 2FA */
+.tfa-display{
+  font-family:'Orbitron',monospace;font-size:2rem;letter-spacing:.4em;
+  color:var(--green);text-align:center;padding:10px;
+  background:var(--surface);border-radius:8px;border:1px solid var(--border);
+}
+
+/* RANSOMWARE */
+.rw-files{display:flex;flex-wrap:wrap;gap:4px;}
+.rw-file{font-size:.65rem;padding:4px 8px;border-radius:4px;font-family:'Share Tech Mono',monospace;border:1px solid;transition:.3s;}
+.rw-file.safe{border-color:var(--green);color:var(--green);}
+.rw-file.enc{border-color:var(--red);color:var(--red);}
+.rw-file.dec{border-color:var(--cyan);color:var(--cyan);}
+
+/* CERT CHECKER */
+.cert-item{padding:8px 10px;border-radius:8px;margin:4px 0;font-size:.75rem;cursor:pointer;border:1px solid var(--border);transition:.2s;background:var(--surface);}
+.cert-item:hover{border-color:var(--cyan);}
+
+/* DARK WEB */
+.dw-item{padding:8px 10px;border-radius:8px;margin:3px 0;font-size:.72rem;cursor:pointer;
+  border:1px solid var(--border);transition:.2s;background:var(--surface);display:flex;align-items:center;gap:8px;}
+.dw-item:hover{border-color:var(--purple);}
+
+/* VPN PATH */
+.vpn-hops{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;margin:8px 0;}
+.vpn-hop{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.9rem;border:2px solid var(--border);background:var(--surface);transition:.3s;}
+.vpn-hop.active{border-color:var(--cyan);box-shadow:0 0 10px var(--cyan);}
+.vpn-arrow{color:var(--text-dim);font-size:.8rem;}
+
+</style>
+</head>
+<body>
+
+<!-- STARFIELD -->
+<canvas id="stars"></canvas>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-title">🛡 CyberSafe</span>
+  <a href="index.html">🏠 Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>⚔ CyberSafe Game Zone</h1>
+  <p>25 interactive security challenges • Learn by playing • Master cybersecurity</p>
+</div>
+
+<!-- GAMES GRID -->
+<div class="games-grid" id="gamesGrid"></div>
+
+<script>
+/* ════ STARFIELD ════ */
+(function(){
+  const c=document.getElementById('stars');
+  const ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  function init(){
+    stars=[];
+    for(let i=0;i<180;i++){
+      stars.push({x:Math.random()*c.width,y:Math.random()*c.height,
+        r:Math.random()*1.5+.3,a:Math.random(),da:(Math.random()*.015+.005)*(Math.random()<.5?1:-1)});
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      s.a+=s.da;
+      if(s.a<=0||s.a>=1)s.da*=-1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(180,220,255,${s.a})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize();init();draw();
+  window.addEventListener('resize',()=>{resize();init();});
+})();
+
+/* ════ HELPERS ════ */
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=arr=>arr[rand(0,arr.length-1)];
+const shuffle=arr=>[...arr].sort(()=>Math.random()-.5);
+
+/* ════ GAME DEFINITIONS ════ */
+const games=[
+
+/* 1 ─ PASSWORD STRENGTH */
+{id:'pw',title:'Password Fortress',icon:'🔐',bg:'#0d2a3e',tag:'easy',desc:'Rate password strength in real time',
+html:`
+<input type="text" id="pw-input" placeholder="Type a password...">
+<div class="pw-bar" id="pw-bar"></div>
+<div class="feedback info" id="pw-fb">Start typing to analyse…</div>
+<div class="score-badge" id="pw-score">Score: 0</div>`,
+init(){
+  const inp=document.getElementById('pw-input');
+  const bar=document.getElementById('pw-bar');
+  const fb=document.getElementById('pw-fb');
+  const sc=document.getElementById('pw-score');
+  inp.addEventListener('input',()=>{
+    const v=inp.value;
+    let s=0;
+    if(v.length>=8)s+=20;if(v.length>=12)s+=15;if(v.length>=16)s+=10;
+    if(/[A-Z]/.test(v))s+=15;if(/[a-z]/.test(v))s+=10;
+    if(/\d/.test(v))s+=15;if(/[^A-Za-z0-9]/.test(v))s+=15;
+    s=Math.min(s,100);
+    bar.style.width=s+'%';
+    const colors=['#ff2952','#ff8c00','#ffe600','#39ff14'];
+    bar.style.background=s<30?colors[0]:s<55?colors[1]:s<80?colors[2]:colors[3];
+    const labels=['Very Weak 🚨','Weak ⚠️','Fair 🟡','Strong ✅','Unbreakable 🛡️'];
+    fb.textContent=s<20?labels[0]:s<40?labels[1]:s<65?labels[2]:s<85?labels[3]:labels[4];
+    fb.className='feedback '+(s<40?'bad':s<65?'info':'good');
+    sc.textContent='Score: '+s;
+  });
+}},
+
+/* 2 ─ PHISHING DETECTOR */
+{id:'ph',title:'Phishing Detector',icon:'🎣',bg:'#1a0d2e',tag:'med',desc:'Spot the fake URLs before you click!',
+html:`
+<div id="ph-url" class="ph-url">Loading…</div>
+<div style="display:flex;gap:8px;">
+  <button class="btn btn-success" onclick="phAnswer(false)">✅ Legit</button>
+  <button class="btn btn-danger" onclick="phAnswer(true)">🚨 Phishing</button>
+</div>
+<div class="feedback" id="ph-fb"></div>
+<div class="score-badge" id="ph-score">0 / 0</div>`,
+init(){
+  window.phData={
+    items:[
+      {url:'https://paypal.com/login',p:false},{url:'https://paypa1.com/secure/login',p:true},
+      {url:'https://google.com',p:false},{url:'https://g00gle.co/verify',p:true},
+      {url:'https://amazon.com/orders',p:false},{url:'https://amaz0n-login.xyz/account',p:true},
+      {url:'https://facebook.com',p:false},{url:'https://faceb00k.verify.ru/login',p:true},
+      {url:'https://netflix.com',p:false},{url:'https://netfliix.com-secure.cc',p:true},
+      {url:'https://apple.com/support',p:false},{url:'https://apple-id.support.phish.net',p:true},
+      {url:'https://microsoft.com',p:false},{url:'https://micros0ft-alert.com/verify',p:true},
+    ],
+    q:0,correct:0,total:0,
+    current:null
+  };
+  window.phNext=function(){
+    const d=window.phData;
+    d.current=pick(d.items);
+    document.getElementById('ph-url').textContent=d.current.url;
+    document.getElementById('ph-fb').textContent='';
+    document.getElementById('ph-fb').className='feedback';
+  };
+  window.phAnswer=function(isPhish){
+    const d=window.phData;
+    if(!d.current)return;
+    d.total++;
+    const correct=(isPhish===d.current.p);
+    if(correct)d.correct++;
+    const fb=document.getElementById('ph-fb');
+    fb.textContent=correct?'✅ Correct! '+(isPhish?'That was phishing!':'That was legitimate.'):
+      '❌ Wrong! '+(d.current.p?'That URL was phishing!':'That URL was real.');
+    fb.className='feedback '+(correct?'good':'bad');
+    document.getElementById('ph-score').textContent=d.correct+' / '+d.total;
+    setTimeout(window.phNext,1200);
+  };
+  window.phNext();
+}},
+
+/* 3 ─ CAESAR CIPHER */
+{id:'cc',title:'Caesar Cipher',icon:'🔒',bg:'#0d2a1a',tag:'med',desc:'Decode encrypted messages to win!',
+html:`
+<div class="cipher-display" id="cc-display">…</div>
+<div style="display:flex;gap:6px;align-items:center;margin:4px 0;">
+  <span style="font-size:.75rem;color:var(--text-dim)">Shift:</span>
+  <input type="number" id="cc-shift" min="1" max="25" value="3" style="width:60px;">
+</div>
+<input type="text" id="cc-answer" placeholder="Decoded message…">
+<button class="btn btn-primary" onclick="ccCheck()">🔍 Decode</button>
+<div class="feedback" id="cc-fb"></div>
+<div class="score-badge" id="cc-score">Score: 0</div>`,
+init(){
+  const phrases=['PROTECT YOUR DATA','STRONG PASSWORD WINS','CYBER SAFETY FIRST',
+    'NEVER SHARE YOUR PIN','ENCRYPT EVERYTHING','STAY ALERT ONLINE'];
+  let score=0;
+  window.ccData={phrase:'',shift:0,score:0};
+  window.ccNext=function(){
+    const p=pick(phrases);
+    const s=rand(1,12);
+    window.ccData={phrase:p,shift:s};
+    document.getElementById('cc-shift').value=s;
+    // encode
+    const enc=p.split('').map(c=>{
+      if(c>='A'&&c<='Z')return String.fromCharCode(((c.charCodeAt(0)-65+s)%26)+65);
+      return c;
+    }).join('');
+    document.getElementById('cc-display').textContent=enc;
+    document.getElementById('cc-fb').textContent='';
+    document.getElementById('cc-answer').value='';
+  };
+  window.ccCheck=function(){
+    const ans=document.getElementById('cc-answer').value.trim().toUpperCase();
+    const fb=document.getElementById('cc-fb');
+    if(ans===window.ccData.phrase){
+      window.ccData.score=(window.ccData.score||0)+10;
+      fb.textContent='✅ Correct! +10 pts';fb.className='feedback good';
+      document.getElementById('cc-score').textContent='Score: '+window.ccData.score;
+      setTimeout(window.ccNext,1000);
+    }else{
+      fb.textContent='❌ Wrong! Hint: shift='+window.ccData.shift;fb.className='feedback bad';
+    }
+  };
+  window.ccNext();
+}},
+
+/* 4 ─ FIREWALL BUILDER */
+{id:'fw',title:'Firewall Builder',icon:'🧱',bg:'#1a1a0d',tag:'med',desc:'Block malicious packets, allow safe ones!',
+html:`
+<div style="font-size:.72rem;color:var(--text-dim);margin-bottom:4px;">Click cells to toggle BLOCK 🔴 / ALLOW 🟢</div>
+<div class="fw-grid" id="fw-grid"></div>
+<button class="btn btn-primary" onclick="fwCheck()">✅ Submit Rules</button>
+<div class="feedback" id="fw-fb"></div>
+<div class="score-badge" id="fw-score">Score: 0</div>`,
+init(){
+  const ports=[{p:'80/HTTP',safe:true},{p:'443/HTTPS',safe:true},{p:'22/SSH',safe:false},
+    {p:'23/Telnet',safe:false},{p:'25/SMTP',safe:true},{p:'4444/RAT',safe:false},
+    {p:'53/DNS',safe:true},{p:'8080/Proxy',safe:false},{p:'110/POP3',safe:true},{p:'31337/Backdoor',safe:false},
+    {p:'143/IMAP',safe:true},{p:'1337/Hack',safe:false}];
+  let selected=[];
+  let totalScore=0;
+  window.fwNext=function(){
+    const grid=document.getElementById('fw-grid');
+    grid.innerHTML='';
+    selected=[];
+    ports.forEach((item,i)=>{
+      selected.push(true); // default allow
+      const cell=document.createElement('div');
+      cell.className='fw-cell';
+      cell.style.background='rgba(57,255,20,.15)';
+      cell.style.borderColor='var(--green)';
+      cell.innerHTML=`<span style="font-size:.6rem;text-align:center;color:var(--green)">${item.p}<br>🟢</span>`;
+      cell.onclick=()=>{
+        selected[i]=!selected[i];
+        cell.style.background=selected[i]?'rgba(57,255,20,.15)':'rgba(255,41,82,.15)';
+        cell.style.borderColor=selected[i]?'var(--green)':'var(--red)';
+        cell.innerHTML=`<span style="font-size:.6rem;text-align:center;color:${selected[i]?'var(--green)':'var(--red)'}">${item.p}<br>${selected[i]?'🟢':'🔴'}</span>`;
+      };
+      grid.appendChild(cell);
+    });
+  };
+  window.fwCheck=function(){
+    let pts=0;
+    ports.forEach((item,i)=>{
+      if(item.safe===selected[i])pts+=10;
+    });
+    totalScore+=pts;
+    const fb=document.getElementById('fw-fb');
+    fb.textContent=`${pts>=90?'🛡️ Perfect!':pts>=60?'✅ Good!':'❌ Try again!'} ${pts}/120 pts`;
+    fb.className='feedback '+(pts>=60?'good':'bad');
+    document.getElementById('fw-score').textContent='Total: '+totalScore;
+    if(pts>=90)setTimeout(window.fwNext,1500);
+  };
+  window.fwNext();
+}},
+
+/* 5 ─ BINARY DECODER */
+{id:'bin',title:'Binary Decoder',icon:'💻',bg:'#0a1a0a',tag:'easy',desc:'Translate binary to letters & solve the message!',
+html:`
+<div class="bin-display" id="bin-disp">00000000</div>
+<input type="text" id="bin-ans" placeholder="Type the letter…" maxlength="2">
+<button class="btn btn-primary" onclick="binCheck()">Decode</button>
+<div class="feedback" id="bin-fb"></div>
+<div class="score-badge" id="bin-score">Score: 0</div>`,
+init(){
+  const words=['HACK','SAFE','CODE','LOCK','FIRE','KEYS','PASS','DATA'];
+  let score=0,wordIdx=0,letterIdx=0,word='';
+  window.binNext=function(){
+    word=words[wordIdx%words.length];letterIdx=0;wordIdx++;
+    showLetter();
+  };
+  function showLetter(){
+    const ch=word[letterIdx];
+    const bin=ch.charCodeAt(0).toString(2).padStart(8,'0');
+    document.getElementById('bin-disp').textContent=bin;
+    document.getElementById('bin-ans').value='';
+    document.getElementById('bin-fb').textContent=`Letter ${letterIdx+1}/${word.length} of "${word.replace(/./g,'_')}"`;
+    document.getElementById('bin-fb').className='feedback info';
+  }
+  window.binCheck=function(){
+    const ans=document.getElementById('bin-ans').value.trim().toUpperCase();
+    const fb=document.getElementById('bin-fb');
+    if(ans===word[letterIdx]){
+      score+=5;fb.textContent='✅ Correct!';fb.className='feedback good';
+      document.getElementById('bin-score').textContent='Score: '+score;
+      letterIdx++;
+      if(letterIdx>=word.length){fb.textContent='🎉 Word complete! +bonus';score+=10;setTimeout(window.binNext,900);}
+      else setTimeout(showLetter,600);
+    }else{
+      fb.textContent='❌ That was "'+word[letterIdx]+'"';fb.className='feedback bad';
+    }
+  };
+  window.binNext();
+}},
+
+/* 6 ─ SOCIAL ENGINEERING QUIZ */
+{id:'se',title:'Social Engineering',icon:'🕵️',bg:'#1a0a0a',tag:'hard',desc:'Identify manipulation & social engineering tactics',
+html:`
+<div id="se-q" style="font-size:.82rem;margin-bottom:8px;line-height:1.5;color:var(--text);">Loading…</div>
+<div id="se-opts"></div>
+<div class="feedback" id="se-fb"></div>
+<div class="score-badge" id="se-score">0 / 0</div>`,
+init(){
+  const qs=[
+    {q:"An email says 'Your account will be deleted in 24 hours. Click here immediately.' This is:",
+     opts:["A normal policy email","A phishing urgency tactic","A legitimate warning","A newsletter"],ans:1},
+    {q:"Someone calls saying they're IT support and needs your password. You should:",
+     opts:["Give it politely","Hang up and verify via official channels","Ask for their name","Email it instead"],ans:1},
+    {q:"A USB drive is left in your office parking lot. You should:",
+     opts:["Plug it in to find the owner","Give it to IT security","Use it if it looks new","Throw it away immediately"],ans:1},
+    {q:"A CEO asks via text for urgent wire transfer. Best action:",
+     opts:["Do it immediately","Verify via a separate phone call","Ask for an email","Ignore it"],ans:1},
+    {q:"Pretexting is:",
+     opts:["A type of encryption","Creating a fake scenario to extract info","A firewall technique","Password hashing"],ans:1},
+  ];
+  let idx=0,correct=0,total=0;
+  window.seNext=function(){
+    if(idx>=qs.length)idx=0;
+    const q=qs[idx];
+    document.getElementById('se-q').textContent=q.q;
+    const opts=document.getElementById('se-opts');
+    opts.innerHTML='';
+    q.opts.forEach((o,i)=>{
+      const btn=document.createElement('button');
+      btn.className='se-option';btn.textContent=(i+1)+'. '+o;
+      btn.onclick=()=>{
+        total++;
+        const fb=document.getElementById('se-fb');
+        document.querySelectorAll('.se-option').forEach(b=>b.style.pointerEvents='none');
+        if(i===q.ans){correct++;btn.classList.add('correct');fb.textContent='✅ Correct!';fb.className='feedback good';}
+        else{btn.classList.add('wrong');opts.querySelectorAll('.se-option')[q.ans].classList.add('correct');
+          fb.textContent='❌ Wrong!';fb.className='feedback bad';}
+        document.getElementById('se-score').textContent=correct+' / '+total;
+        idx++;setTimeout(window.seNext,1400);
+      };
+      opts.appendChild(btn);
+    });
+    document.getElementById('se-fb').textContent='';
+  };
+  window.seNext();
+}},
+
+/* 7 ─ WHACK-A-MALWARE */
+{id:'wm',title:'Whack-a-Malware',icon:'🦠',bg:'#1a0d1a',tag:'easy',desc:'Click the malware before it infects your system!',
+html:`
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+  <span class="score-badge" id="wm-score">Score: 0</span>
+  <span class="score-badge" id="wm-lives" style="border-color:var(--red);color:var(--red)">❤️❤️❤️</span>
+  <button class="btn btn-primary" id="wm-start" onclick="wmStart()">▶ Start</button>
+</div>
+<div class="wm-grid" id="wm-grid"></div>
+<div class="feedback" id="wm-fb"></div>`,
+init(){
+  const icons=['🦠','💉','🕷️','👾','🔴'];
+  const safe=['✅','🛡️','🔒','💚'];
+  let score=0,lives=3,running=false,timers=[];
+  window.wmStart=function(){
+    score=0;lives=3;running=true;
+    document.getElementById('wm-start').style.display='none';
+    document.getElementById('wm-score').textContent='Score: 0';
+    document.getElementById('wm-lives').textContent='❤️❤️❤️';
+    document.getElementById('wm-fb').textContent='';
+    runGame();
+  };
+  function runGame(){
+    const grid=document.getElementById('wm-grid');
+    grid.innerHTML='';
+    const cells=[];
+    for(let i=0;i<12;i++){
+      const c=document.createElement('div');c.className='wm-hole';c.textContent='';
+      cells.push(c);grid.appendChild(c);
+    }
+    function spawnMalware(){
+      if(!running)return;
+      const idx=rand(0,11);
+      const isMal=Math.random()<.55;
+      const icon=isMal?pick(icons):pick(safe);
+      cells[idx].textContent=icon;
+      cells[idx].className='wm-hole'+(isMal?' active':'');
+      cells[idx].onclick=function(){
+        if(!cells[idx].textContent)return;
+        if(isMal){score+=10;document.getElementById('wm-score').textContent='Score: '+score;}
+        else{
+          lives--;
+          const lv=['','❤️','❤️❤️','❤️❤️❤️'];
+          document.getElementById('wm-lives').textContent=lives>0?lv[lives]:'💔';
+          if(lives<=0){running=false;document.getElementById('wm-fb').textContent='💀 Game Over! Score: '+score;
+            document.getElementById('wm-fb').className='feedback bad';
+            document.getElementById('wm-start').textContent='↺ Retry';
+            document.getElementById('wm-start').style.display='';
+            timers.forEach(clearTimeout);return;}
+        }
+        cells[idx].textContent='';cells[idx].className='wm-hole';cells[idx].onclick=null;
+      };
+      const t=setTimeout(()=>{
+        if(cells[idx].className.includes('active')&&lives>0){
+          lives--;
+          const lv=['','❤️','❤️❤️','❤️❤️❤️'];
+          document.getElementById('wm-lives').textContent=lives>0?lv[lives]:'💔';
+          if(lives<=0){running=false;document.getElementById('wm-fb').textContent='💀 Game Over! Score: '+score;
+            document.getElementById('wm-fb').className='feedback bad';
+            document.getElementById('wm-start').textContent='↺ Retry';
+            document.getElementById('wm-start').style.display='';
+            timers.forEach(clearTimeout);return;}
+        }
+        cells[idx].textContent='';cells[idx].className='wm-hole';cells[idx].onclick=null;
+      },900-Math.min(score*2,400));
+      timers.push(t);
+      if(running)setTimeout(spawnMalware,500);
+    }
+    spawnMalware();
+  }
+}},
+
+/* 8 ─ NETWORK INFECTION STOPPER */
+{id:'ni',title:'Network Infection',icon:'🌐',bg:'#0d0d2a',tag:'hard',desc:'Isolate infected nodes before the virus spreads!',
+html:`
+<div style="font-size:.72rem;color:var(--text-dim);margin-bottom:4px;">Click infected 🔴 nodes to quarantine them!</div>
+<div class="net-map" id="ni-map"></div>
+<div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+  <button class="btn btn-primary" onclick="niStart()">▶ Start</button>
+  <span class="score-badge" id="ni-score">Saved: 0</span>
+  <span class="score-badge" id="ni-infected" style="border-color:var(--red);color:var(--red)">Infected: 0</span>
+</div>`,
+init(){
+  const emojis=['💻','🖥️','📱','🖨️','📡'];
+  let nodes=[],running=false,spreadTimer=null,saved=0,totalInfected=0;
+  window.niStart=function(){
+    running=true;saved=0;totalInfected=0;
+    const map=document.getElementById('ni-map');map.innerHTML='';
+    nodes=[];
+    for(let i=0;i<9;i++){
+      const n=document.createElement('div');n.className='net-node';
+      n.style.left=rand(5,80)+'%';n.style.top=rand(5,70)+'%';
+      n.textContent=pick(emojis);
+      n.dataset.infected=(i<2)?'1':'0';
+      n.className='net-node '+(i<2?'infected':'');
+      if(i<2)totalInfected++;
+      n.onclick=function(){
+        if(n.dataset.infected==='1'){
+          n.dataset.infected='0';n.className='net-node clean';
+          saved++;document.getElementById('ni-score').textContent='Saved: '+saved;
+        }
+      };
+      map.appendChild(n);nodes.push(n);
+    }
+    updateInfectedCount();
+    if(spreadTimer)clearInterval(spreadTimer);
+    spreadTimer=setInterval(()=>{
+      if(!running)return;
+      const infectedNodes=nodes.filter(n=>n.dataset.infected==='1');
+      if(infectedNodes.length===0){clearInterval(spreadTimer);return;}
+      const healthyNodes=nodes.filter(n=>n.dataset.infected==='0'&&!n.className.includes('clean'));
+      if(healthyNodes.length===0)return;
+      const target=pick(healthyNodes);
+      target.dataset.infected='1';target.className='net-node infected';
+      target.onclick=function(){
+        if(target.dataset.infected==='1'){
+          target.dataset.infected='0';target.className='net-node clean';
+          saved++;document.getElementById('ni-score').textContent='Saved: '+saved;
+        }
+      };
+      totalInfected++;updateInfectedCount();
+    },1800);
+  };
+  function updateInfectedCount(){
+    const c=nodes.filter(n=>n.dataset.infected==='1').length;
+    document.getElementById('ni-infected').textContent='Infected: '+c;
+  }
+}},
+
+/* 9 ─ 2FA CODE MATCH */
+{id:'tfa',title:'2FA Speed Match',icon:'📲',bg:'#0a1a2a',tag:'easy',desc:'Enter the one-time code before it expires!',
+html:`
+<div class="tfa-display" id="tfa-code">------</div>
+<div class="timer-bar" id="tfa-timer" style="margin:8px 0;"></div>
+<input type="text" id="tfa-inp" maxlength="6" placeholder="Enter 6-digit code">
+<button class="btn btn-primary" onclick="tfaCheck()">✅ Verify</button>
+<div class="feedback" id="tfa-fb"></div>
+<div class="score-badge" id="tfa-score">Score: 0</div>`,
+init(){
+  let code='',timerW=100,timerInt=null,score=0;
+  window.tfaNext=function(){
+    code=String(rand(100000,999999));
+    document.getElementById('tfa-code').textContent=code;
+    document.getElementById('tfa-inp').value='';
+    document.getElementById('tfa-fb').textContent='';
+    timerW=100;
+    if(timerInt)clearInterval(timerInt);
+    timerInt=setInterval(()=>{
+      timerW-=1;
+      const bar=document.getElementById('tfa-timer');
+      bar.style.width=timerW+'%';
+      bar.style.background=timerW>50?'var(--green)':timerW>25?'var(--orange)':'var(--red)';
+      if(timerW<=0){clearInterval(timerInt);
+        document.getElementById('tfa-fb').textContent='⏰ Code expired!';
+        document.getElementById('tfa-fb').className='feedback bad';
+        setTimeout(window.tfaNext,1200);}
+    },80);
+  };
+  window.tfaCheck=function(){
+    const val=document.getElementById('tfa-inp').value.trim();
+    const fb=document.getElementById('tfa-fb');
+    if(val===code){
+      clearInterval(timerInt);score+=10+Math.floor(timerW/10);
+      fb.textContent='✅ Authenticated! +'+( 10+Math.floor(timerW/10))+' pts';
+      fb.className='feedback good';
+      document.getElementById('tfa-score').textContent='Score: '+score;
+      setTimeout(window.tfaNext,1000);
+    }else{
+      fb.textContent='❌ Wrong code!';fb.className='feedback bad';
+    }
+  };
+  window.tfaNext();
+}},
+
+/* 10 ─ RANSOMWARE RESCUE */
+{id:'rw',title:'Ransomware Rescue',icon:'💾',bg:'#1a0a00',tag:'hard',desc:'Find the decryption key & save your files!',
+html:`
+<div style="font-size:.75rem;color:var(--text-dim);margin-bottom:6px;">Files are being encrypted! Find the correct key to decrypt them.</div>
+<div class="rw-files" id="rw-files"></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0;" id="rw-keys"></div>
+<div class="feedback" id="rw-fb"></div>
+<div class="score-badge" id="rw-score">Saved: 0</div>`,
+init(){
+  const fileNames=['doc.pdf','photo.jpg','data.xls','notes.txt','video.mp4','config.ini','backup.zip','code.py'];
+  let correctKey='',score=0;
+  window.rwNext=function(){
+    const files=document.getElementById('rw-files');
+    files.innerHTML='';
+    fileNames.forEach(f=>{
+      const d=document.createElement('div');d.className='rw-file enc';d.textContent='🔒 '+f;d.id='rwf-'+f;
+      files.appendChild(d);
+    });
+    // gen keys
+    const keys=['AES-256','RSA-K9','XOR-77','KEY-42','DEC-X1'];
+    correctKey=pick(keys);
+    const shuffled=shuffle(keys);
+    const keysDiv=document.getElementById('rw-keys');
+    keysDiv.innerHTML='';
+    shuffled.forEach(k=>{
+      const btn=document.createElement('button');
+      btn.className='btn btn-warn';btn.textContent=k;
+      btn.onclick=()=>{
+        keysDiv.querySelectorAll('button').forEach(b=>b.disabled=true);
+        if(k===correctKey){
+          score+=fileNames.length*5;
+          fileNames.forEach((f,i)=>{
+            setTimeout(()=>{
+              const el=document.getElementById('rwf-'+f);
+              if(el){el.className='rw-file dec';el.textContent='🔓 '+f;}
+            },i*150);
+          });
+          setTimeout(()=>{
+            document.getElementById('rw-fb').textContent='🎉 All files decrypted! +'+fileNames.length*5+' pts';
+            document.getElementById('rw-fb').className='feedback good';
+            document.getElementById('rw-score').textContent='Saved: '+score;
+            setTimeout(window.rwNext,1500);
+          },fileNames.length*150+400);
+        }else{
+          document.getElementById('rw-fb').textContent='❌ Wrong key! Files lost!';
+          document.getElementById('rw-fb').className='feedback bad';
+          fileNames.forEach(f=>{const el=document.getElementById('rwf-'+f);if(el)el.style.opacity='.3';});
+          setTimeout(window.rwNext,1500);
+        }
+      };
+      keysDiv.appendChild(btn);
+    });
+  };
+  window.rwNext();
+}},
+
+/* 11 ─ VPN PATH BUILDER */
+{id:'vpn',title:'VPN Path Builder',icon:'🌍',bg:'#0d1a1a',tag:'med',desc:'Build the correct VPN chain to stay anonymous!',
+html:`
+<div style="font-size:.75rem;color:var(--text-dim);margin-bottom:6px;">Arrange: You → VPN Server → Encrypted Tunnel → Internet</div>
+<div class="vpn-hops" id="vpn-hops"></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;" id="vpn-options"></div>
+<button class="btn btn-primary" onclick="vpnCheck()">🔍 Verify Path</button>
+<div class="feedback" id="vpn-fb"></div>
+<div class="score-badge" id="vpn-score">Score: 0</div>`,
+init(){
+  const chains=[
+    {items:['👤 You','🖥 VPN','🔐 Tunnel','🌐 Net'],correct:[0,1,2,3]},
+    {items:['👤 You','🔐 Encrypt','🖥 Exit Node','🌐 Net'],correct:[0,1,2,3]},
+    {items:['👤 You','🔥 Firewall','🖥 Proxy','🌐 Net'],correct:[0,1,2,3]},
+  ];
+  let score=0,currentChain=null,selectedOrder=[];
+  window.vpnNext=function(){
+    currentChain=pick(chains);selectedOrder=[];
+    const hops=document.getElementById('vpn-hops');hops.innerHTML='';
+    for(let i=0;i<4;i++){
+      if(i>0){const a=document.createElement('span');a.className='vpn-arrow';a.textContent='→';hops.appendChild(a);}
+      const h=document.createElement('div');h.className='vpn-hop';h.id='vpn-hop-'+i;
+      h.textContent='?';hops.appendChild(h);
+    }
+    const opts=document.getElementById('vpn-options');opts.innerHTML='';
+    shuffle(currentChain.items).forEach((item,i)=>{
+      const btn=document.createElement('button');btn.className='btn btn-purple';
+      btn.textContent=item;btn.dataset.item=item;
+      btn.onclick=()=>{
+        if(selectedOrder.length<4){
+          selectedOrder.push(item);
+          document.getElementById('vpn-hop-'+( selectedOrder.length-1)).textContent=item;
+          document.getElementById('vpn-hop-'+(selectedOrder.length-1)).classList.add('active');
+          btn.disabled=true;
+        }
+      };
+      opts.appendChild(btn);
+    });
+    document.getElementById('vpn-fb').textContent='';
+  };
+  window.vpnCheck=function(){
+    if(selectedOrder.length<4){document.getElementById('vpn-fb').textContent='Select all 4 hops!';return;}
+    const correct=currentChain.correct.every((ci,i)=>currentChain.items[ci]===selectedOrder[i]);
+    const fb=document.getElementById('vpn-fb');
+    if(correct){score+=15;fb.textContent='✅ Correct VPN path! +15 pts';fb.className='feedback good';
+      document.getElementById('vpn-score').textContent='Score: '+score;setTimeout(window.vpnNext,1200);}
+    else{fb.textContent='❌ Wrong order! VPN compromised!';fb.className='feedback bad';}
+  };
+  window.vpnNext();
+}},
+
+/* 12 ─ CERTIFICATE CHECKER */
+{id:'cert',title:'SSL Certificate Check',icon:'🏅',bg:'#0d1a0d',tag:'med',desc:'Identify valid vs invalid SSL certificates',
+html:`
+<div id="cert-item" class="cert-item">Loading…</div>
+<div style="display:flex;gap:8px;margin-top:6px;">
+  <button class="btn btn-success" onclick="certAnswer(true)">✅ Valid Cert</button>
+  <button class="btn btn-danger" onclick="certAnswer(false)">⚠️ Invalid</button>
+</div>
+<div class="feedback" id="cert-fb"></div>
+<div class="score-badge" id="cert-score">0 / 0</div>`,
+init(){
+  const certs=[
+    {text:'🟢 HTTPS • Issued by DigiCert • Expires 2026-01-15 • Matches domain',valid:true},
+    {text:'🔴 HTTP (no TLS) • No certificate found',valid:false},
+    {text:'⚠️ Certificate expired 2023-06-01 • Self-signed',valid:false},
+    {text:'🟢 HTTPS • Let\'s Encrypt • Valid • Domain verified',valid:true},
+    {text:'⚠️ Certificate mismatch: cert for evil.com used on bank.com',valid:false},
+    {text:'🟢 EV Certificate • Comodo CA • Valid till 2025-12-01',valid:true},
+    {text:'🔴 SHA-1 signature (deprecated) • Self-signed • No chain of trust',valid:false},
+    {text:'🟢 Wildcard cert *.amazon.com • AWS CA • Valid',valid:true},
+  ];
+  let correct=0,total=0,current=null;
+  window.certNext=function(){
+    current=pick(certs);
+    document.getElementById('cert-item').textContent=current.text;
+    document.getElementById('cert-fb').textContent='';
+  };
+  window.certAnswer=function(isValid){
+    total++;
+    const ok=(isValid===current.valid);
+    if(ok)correct++;
+    const fb=document.getElementById('cert-fb');
+    fb.textContent=ok?'✅ Correct!':'❌ Wrong — cert was '+(current.valid?'valid':'invalid');
+    fb.className='feedback '+(ok?'good':'bad');
+    document.getElementById('cert-score').textContent=correct+' / '+total;
+    setTimeout(window.certNext,1200);
+  };
+  window.certNext();
+}},
+
+/* 13 ─ DARK WEB DETECTOR */
+{id:'dw',title:'Dark Web Detector',icon:'🕶️',bg:'#0d0d0d',tag:'med',desc:'Identify dark web red flags in URLs & content',
+html:`
+<div id="dw-item" class="dw-item">…</div>
+<div style="display:flex;gap:8px;margin-top:6px;">
+  <button class="btn btn-danger" onclick="dwAnswer(true)">🚨 Dark Web</button>
+  <button class="btn btn-success" onclick="dwAnswer(false)">✅ Surface Web</button>
+</div>
+<div class="feedback" id="dw-fb"></div>
+<div class="score-badge" id="dw-score">0 / 0</div>`,
+init(){
+  const items=[
+    {text:'🌐 http://5fvnkz8t.onion/marketplace',dark:true},
+    {text:'🌐 https://wikipedia.org/wiki/Cybersecurity',dark:false},
+    {text:'🌐 http://zzlwvr6a.onion/drugs',dark:true},
+    {text:'🌐 https://google.com',dark:false},
+    {text:'🌐 http://tor2web.org/redirect/abc123.onion',dark:true},
+    {text:'🌐 https://github.com/cybersecurity',dark:false},
+    {text:'💬 "Buy CVVs cheap — Telegram: @shadow_shop_99"',dark:true},
+    {text:'💬 "Join our cybersecurity webinar this Friday"',dark:false},
+  ];
+  let correct=0,total=0,cur=null;
+  window.dwNext=function(){
+    cur=pick(items);
+    document.getElementById('dw-item').textContent=cur.text;
+    document.getElementById('dw-fb').textContent='';
+  };
+  window.dwAnswer=function(isDark){
+    total++;const ok=(isDark===cur.dark);if(ok)correct++;
+    const fb=document.getElementById('dw-fb');
+    fb.textContent=ok?'✅ Correct!':'❌ Wrong!';fb.className='feedback '+(ok?'good':'bad');
+    document.getElementById('dw-score').textContent=correct+' / '+total;
+    setTimeout(window.dwNext,1100);
+  };
+  window.dwNext();
+}},
+
+/* 14 ─ KEYLOGGER DETECTIVE */
+{id:'kd',title:'Keylogger Detective',icon:'⌨️',bg:'#1a1a0d',tag:'hard',desc:'Spot the hidden keylogger process in the stream!',
+html:`
+<div style="font-size:.72rem;color:var(--text-dim);margin-bottom:4px;">Watch the process stream. Click STOP when you see a keylogger process!</div>
+<div class="kd-stream" id="kd-stream">…</div>
+<div style="display:flex;gap:8px;margin-top:8px;">
+  <button class="btn btn-primary" onclick="kdStart()">▶ Start</button>
+  <button class="btn btn-danger" onclick="kdStop()">⛔ Stop – Keylogger!</button>
+</div>
+<div class="feedback" id="kd-fb"></div>
+<div class="score-badge" id="kd-score">Score: 0</div>`,
+init(){
+  const normal=['explorer.exe','chrome.exe','svchost.exe','lsass.exe','winlogon.exe','csrss.exe','system','taskmgr.exe','notepad.exe','calc.exe'];
+  const malicious=['keylog32.exe','kghost.dll','spyware.exe','logger.exe','hook_kbd.sys','kspy.exe'];
+  let running=false,timer=null,score=0,showingMal=false,interval=null;
+  window.kdStart=function(){
+    running=true;showingMal=false;
+    let elapsed=0;
+    const malAt=rand(3000,8000);
+    const stream=document.getElementById('kd-stream');
+    stream.textContent='';
+    if(interval)clearInterval(interval);
+    interval=setInterval(()=>{
+      elapsed+=300;
+      if(elapsed>=malAt&&!showingMal){showingMal=true;}
+      const proc=showingMal&&Math.random()<.4?pick(malicious):pick(normal);
+      stream.textContent=new Date().toLocaleTimeString()+' > '+proc+'    '+stream.textContent.slice(0,50);
+    },300);
+  };
+  window.kdStop=function(){
+    if(!running)return;running=false;
+    if(interval)clearInterval(interval);
+    const fb=document.getElementById('kd-fb');
+    if(showingMal){score+=20;fb.textContent='✅ Caught it! +20 pts';fb.className='feedback good';}
+    else{fb.textContent='⚠️ False alarm — no keylogger yet!';fb.className='feedback bad';}
+    document.getElementById('kd-score').textContent='Score: '+score;
+  };
+}},
+
+/* 15 ─ VIRUS SCANNER */
+{id:'vs',title:'Virus Scanner',icon:'🔬',bg:'#0a0d1a',tag:'easy',desc:'Scan files and quarantine infected ones!',
+html:`
+<div class="vs-bar"><div class="vs-fill" id="vs-fill"></div></div>
+<div class="vs-files" id="vs-files"></div>
+<button class="btn btn-primary" onclick="vsScan()">🔍 Scan</button>
+<div class="feedback" id="vs-fb"></div>
+<div class="score-badge" id="vs-score">Clean: 0 | Virus: 0</div>`,
+init(){
+  const allFiles=['document.pdf','photo.jpg','setup.exe','song.mp3','report.docx','crack.exe','readme.txt','patch.bat','holiday.zip','updater.exe','budget.xlsx','game.iso'];
+  window.vsScan=function(){
+    const files=shuffle(allFiles).slice(0,8);
+    const fc=document.getElementById('vs-files');fc.innerHTML='';
+    document.getElementById('vs-fill').style.width='0%';
+    document.getElementById('vs-fb').textContent='Scanning…';
+    let clean=0,virus=0;
+    files.forEach((f,i)=>{
+      const isVirus=/crack|patch|updater/.test(f)||Math.random()<.25;
+      const d=document.createElement('div');d.className='vs-file';d.textContent=f;
+      fc.appendChild(d);
+      setTimeout(()=>{
+        document.getElementById('vs-fill').style.width=((i+1)/files.length*100)+'%';
+        if(isVirus){d.className='vs-file virus';d.textContent='🦠 '+f;virus++;}
+        else{d.className='vs-file clean';d.textContent='✅ '+f;clean++;}
+        if(i===files.length-1){
+          document.getElementById('vs-fb').textContent=`Scan complete! ${virus} threat${virus!==1?'s':''} found.`;
+          document.getElementById('vs-fb').className='feedback '+(virus?'bad':'good');
+          document.getElementById('vs-score').textContent='Clean: '+clean+' | Virus: '+virus;
+        }
+      },i*300+200);
+    });
+  };
+  window.vsScan();
+}},
+
+/* 16 ─ SQL INJECTION SPOTTER */
+{id:'sql',title:'SQL Injection Spotter',icon:'💉',bg:'#0d1a0a',tag:'hard',desc:'Find which input is vulnerable to SQL injection',
+html:`
+<div class="sql-code" id="sql-code">…</div>
+<div style="display:flex;gap:8px;margin:6px 0;" id="sql-opts"></div>
+<div class="feedback" id="sql-fb"></div>
+<div class="score-badge" id="sql-score">0 / 0</div>`,
+init(){
+  const qs=[
+    {code:`SELECT * FROM users WHERE name='[INPUT]'`,
+     opts:["John","' OR '1'='1","admin"],vuln:1,
+     explain:"' OR '1'='1 always returns true — SQL injection!"},
+    {code:`SELECT * FROM products WHERE id=[INPUT]`,
+     opts:["42","hello","1; DROP TABLE users--"],vuln:2,
+     explain:"DROP TABLE after semicolon — classic injection!"},
+    {code:`SELECT * FROM login WHERE pass='[INPUT]'`,
+     opts:["password123","admin' --","abc"],vuln:1,
+     explain:"' -- comments out the rest of the query!"},
+  ];
+  let idx=0,correct=0,total=0;
+  window.sqlNext=function(){
+    const q=qs[idx%qs.length];idx++;
+    document.getElementById('sql-code').textContent=q.code;
+    const opts=document.getElementById('sql-opts');opts.innerHTML='';
+    q.opts.forEach((o,i)=>{
+      const btn=document.createElement('button');btn.className='btn btn-warn';btn.textContent=o;
+      btn.onclick=()=>{
+        total++;opts.querySelectorAll('button').forEach(b=>b.disabled=true);
+        const fb=document.getElementById('sql-fb');
+        if(i===q.vuln){correct++;fb.textContent='✅ Correct! '+q.explain;fb.className='feedback good';}
+        else{fb.textContent='❌ Wrong! '+q.explain;fb.className='feedback bad';}
+        document.getElementById('sql-score').textContent=correct+' / '+total;
+        setTimeout(window.sqlNext,1500);
+      };
+      opts.appendChild(btn);
+    });
+    document.getElementById('sql-fb').textContent='';
+  };
+  window.sqlNext();
+}},
+
+/* 17 ─ ENCRYPTION UNSCRAMBLE */
+{id:'eu',title:'Encryption Unscramble',icon:'🔑',bg:'#1a0d0a',tag:'med',desc:'Unscramble encryption algorithm names!',
+html:`
+<div class="cipher-display" id="eu-display">…</div>
+<div class="enc-letters" id="eu-letters"></div>
+<input type="text" id="eu-ans" placeholder="Type the algorithm name…">
+<button class="btn btn-primary" onclick="euCheck()">✅ Submit</button>
+<div class="feedback" id="eu-fb"></div>
+<div class="score-badge" id="eu-score">Score: 0</div>`,
+init(){
+  const words=['AES','RSA','DES','SHA256','BLOWFISH','TWOFISH','CHACHA20','BCRYPT','PBKDF2','ECDSA'];
+  let score=0;
+  window.euNext=function(){
+    const w=pick(words);
+    const scrambled=shuffle(w.split('')).join('');
+    document.getElementById('eu-display').textContent=scrambled;
+    document.getElementById('eu-ans').value='';
+    document.getElementById('eu-fb').textContent='Unscramble the encryption algorithm!';
+    document.getElementById('eu-fb').className='feedback info';
+    // show letter tiles
+    const lc=document.getElementById('eu-letters');lc.innerHTML='';
+    scrambled.split('').forEach(l=>{
+      const s=document.createElement('span');s.className='letter-box';s.textContent=l;
+      s.onclick=()=>{
+        document.getElementById('eu-ans').value+=l;
+        s.classList.add('placed');s.style.opacity='.4';
+      };
+      lc.appendChild(s);
+    });
+    window.euCurrent=w;
+  };
+  window.euCheck=function(){
+    const ans=document.getElementById('eu-ans').value.trim().toUpperCase();
+    const fb=document.getElementById('eu-fb');
+    if(ans===window.euCurrent){
+      score+=15;fb.textContent='✅ Correct! +15 pts';fb.className='feedback good';
+      document.getElementById('eu-score').textContent='Score: '+score;
+      setTimeout(window.euNext,900);
+    }else{fb.textContent='❌ Try again! Answer: '+window.euCurrent;fb.className='feedback bad';}
+  };
+  window.euNext();
+}},
+
+/* 18 ─ TOKEN HUNT */
+{id:'th',title:'Token Hunt',icon:'🔎',bg:'#0a0a1a',tag:'easy',desc:'Find hidden authentication tokens in the grid!',
+html:`
+<div style="font-size:.72rem;color:var(--text-dim);margin-bottom:4px;">Find all 3 hidden 🔑 tokens! Avoid 💣</div>
+<div class="token-grid" id="th-grid"></div>
+<button class="btn btn-primary" onclick="thNew()" style="margin-top:8px;">↺ New Board</button>
+<div class="feedback" id="th-fb"></div>
+<div class="score-badge" id="th-score">Found: 0</div>`,
+init(){
+  let found=0,score=0;
+  window.thNew=function(){
+    found=0;
+    const grid=document.getElementById('th-grid');grid.innerHTML='';
+    const cells=Array(25).fill('empty');
+    const tokenPos=shuffle([...Array(25).keys()]).slice(0,3);
+    const bombPos=shuffle([...Array(25).keys()].filter(i=>!tokenPos.includes(i))).slice(0,4);
+    for(let i=0;i<25;i++){
+      const c=document.createElement('div');c.className='token-cell';c.textContent='🟦';
+      const isToken=tokenPos.includes(i);const isBomb=bombPos.includes(i);
+      c.onclick=()=>{
+        if(c.classList.contains('revealed'))return;
+        c.classList.add('revealed');
+        if(isToken){c.textContent='🔑';c.classList.add('found');found++;
+          document.getElementById('th-score').textContent='Found: '+found;
+          if(found===3){score+=30;document.getElementById('th-fb').textContent='🏆 All tokens found! +30 pts';
+            document.getElementById('th-fb').className='feedback good';}}
+        else if(isBomb){c.textContent='💣';c.classList.add('empty');
+          document.getElementById('th-fb').textContent='💥 Hit a bomb!';
+          document.getElementById('th-fb').className='feedback bad';}
+        else{c.textContent='·';c.classList.add('empty');}
+      };
+      grid.appendChild(c);
+    }
+    document.getElementById('th-fb').textContent='';
+    document.getElementById('th-score').textContent='Found: 0';
+  };
+  window.thNew();
+}},
+
+/* 19 ─ DDOS SHIELD */
+{id:'dd',title:'DDoS Shield',icon:'🛡️',bg:'#0a0d0a',tag:'hard',desc:'Block incoming attack packets before server crashes!',
+html:`
+<div style="display:flex;justify-content:center;margin:8px 0;">
+  <div class="ddos-server" id="dd-server">🖥️</div>
+</div>
+<progress id="dd-hp" max="100" value="100"></progress>
+<div style="font-size:.7rem;text-align:center;color:var(--text-dim);margin:4px 0;">Server Health</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;" id="dd-packets"></div>
+<div style="display:flex;gap:8px;justify-content:center;margin-top:6px;">
+  <button class="btn btn-primary" onclick="ddStart()">▶ Defend</button>
+  <span class="score-badge" id="dd-score">Blocked: 0</span>
+</div>`,
+init(){
+  let hp=100,blocked=0,running=false,spawnInt=null;
+  window.ddStart=function(){
+    hp=100;blocked=0;running=true;
+    document.getElementById('dd-hp').value=100;
+    document.getElementById('dd-score').textContent='Blocked: 0';
+    document.getElementById('dd-server').className='ddos-server';
+    document.getElementById('dd-packets').innerHTML='';
+    if(spawnInt)clearInterval(spawnInt);
+    spawnInt=setInterval(spawnPacket,700);
+  };
+  function spawnPacket(){
+    if(!running)return;
+    const isMalicious=Math.random()<.6;
+    const pkt=document.createElement('button');
+    pkt.className='btn '+(isMalicious?'btn-danger':'btn-success');
+    pkt.textContent=isMalicious?'☠️ ATTACK':'✅ LEGIT';
+    pkt.style.fontSize='.65rem';pkt.style.padding='5px 10px';
+    const container=document.getElementById('dd-packets');
+    container.appendChild(pkt);
+    // auto-damage if not blocked
+    const dmgTimer=setTimeout(()=>{
+      if(pkt.parentNode){
+        if(isMalicious){
+          hp=Math.max(0,hp-12);
+          document.getElementById('dd-hp').value=hp;
+          document.getElementById('dd-server').className='ddos-server hit';
+          setTimeout(()=>document.getElementById('dd-server').className='ddos-server',300);
+          if(hp<=0){running=false;clearInterval(spawnInt);
+            document.getElementById('dd-server').textContent='💀';
+            document.getElementById('dd-server').style.borderColor='var(--red)';
+          }
+        }
+        pkt.remove();
+      }
+    },2000);
+    pkt.onclick=()=>{
+      clearTimeout(dmgTimer);pkt.remove();
+      if(isMalicious){blocked++;document.getElementById('dd-score').textContent='Blocked: '+blocked;}
+      else{hp=Math.max(0,hp-8);document.getElementById('dd-hp').value=hp;}// penalty for blocking legit
+    };
+    // cleanup overflow
+    if(container.children.length>8)container.firstChild.click&&container.firstChild.click();
+  }
+}},
+
+/* 20 ─ INCOGNITO IQ */
+{id:'iq',title:'Incognito IQ',icon:'🕵️',bg:'#0d0a1a',tag:'easy',desc:'True or False: What does incognito mode actually do?',
+html:`
+<div id="iq-q" style="font-size:.82rem;line-height:1.5;margin-bottom:8px;color:var(--text);">Loading…</div>
+<div style="display:flex;gap:8px;">
+  <button class="btn btn-success" onclick="iqAnswer(true)">✅ TRUE</button>
+  <button class="btn btn-danger" onclick="iqAnswer(false)">❌ FALSE</button>
+</div>
+<div class="feedback" id="iq-fb"></div>
+<div class="score-badge" id="iq-score">0 / 0</div>`,
+init(){
+  const qs=[
+    {q:"Incognito mode hides your activity from your ISP.",ans:false,exp:"Your ISP can still see your traffic!"},
+    {q:"Incognito mode doesn't save your browsing history locally.",ans:true,exp:"Correct — local history is not saved."},
+    {q:"Incognito mode makes you anonymous online.",ans:false,exp:"Websites can still track you via IP and fingerprinting."},
+    {q:"Incognito mode prevents websites from using cookies during that session.",ans:true,exp:"Cookies are deleted when the window closes."},
+    {q:"Using incognito mode protects you from malware.",ans:false,exp:"Incognito does nothing against malware."},
+    {q:"Your employer/school can still see incognito traffic on their network.",ans:true,exp:"Network admins can log all traffic regardless."},
+  ];
+  let idx=0,correct=0,total=0;
+  window.iqNext=function(){
+    const q=qs[idx%qs.length];idx++;
+    document.getElementById('iq-q').textContent=q.q;
+    document.getElementById('iq-fb').textContent='';
+    window.iqCurrent=q;
+  };
+  window.iqAnswer=function(val){
+    total++;const ok=(val===window.iqCurrent.ans);if(ok)correct++;
+    const fb=document.getElementById('iq-fb');
+    fb.textContent=(ok?'✅ ':'❌ ')+window.iqCurrent.exp;
+    fb.className='feedback '+(ok?'good':'bad');
+    document.getElementById('iq-score').textContent=correct+' / '+total;
+    setTimeout(window.iqNext,1400);
+  };
+  window.iqNext();
+}},
+
+/* 21 ─ CYBER TRIVIA BLITZ */
+{id:'ct',title:'Cyber Trivia Blitz',icon:'⚡',bg:'#1a1a0a',tag:'med',desc:'Fast-fire cybersecurity trivia — answer quickly!',
+html:`
+<div class="timer-bar" id="ct-tbar" style="margin-bottom:6px;"></div>
+<div id="ct-q" style="font-size:.8rem;line-height:1.5;margin-bottom:8px;color:var(--text);">Press Start!</div>
+<div id="ct-opts"></div>
+<div class="feedback" id="ct-fb"></div>
+<div style="display:flex;gap:8px;align-items:center;margin-top:6px;">
+  <button class="btn btn-primary" onclick="ctStart()">▶ Start</button>
+  <span class="score-badge" id="ct-score">Score: 0</span>
+</div>`,
+init(){
+  const qs=[
+    {q:"What does HTTPS stand for?",opts:["HyperText Transfer Protocol Secure","High Tech Processing System","Host Transfer Protocol Service"],ans:0},
+    {q:"Which port does SSH use by default?",opts:["21","22","80"],ans:1},
+    {q:"What is a 'zero-day' vulnerability?",opts:["A bug fixed the same day","An unknown flaw with no patch","A virus from 2000"],ans:1},
+    {q:"What does a VPN do?",opts:["Speeds up your internet","Encrypts and tunnels traffic","Blocks all ads"],ans:1},
+    {q:"MD5 is considered insecure because:",opts:["It's too slow","It produces collision vulnerabilities","It uses too much memory"],ans:1},
+    {q:"What is 'smishing'?",opts:["Email phishing","SMS phishing","Spear phishing via voice"],ans:1},
+    {q:"What does CIA stand for in cybersecurity?",opts:["Confidentiality, Integrity, Availability","Central Intelligence Agency","Code, Integrate, Analyze"],ans:0},
+  ];
+  let idx=0,score=0,timerInt=null,timerW=100;
+  window.ctStart=function(){
+    idx=0;score=0;
+    document.getElementById('ct-score').textContent='Score: 0';
+    window.ctNext();
+  };
+  window.ctNext=function(){
+    if(idx>=qs.length){
+      document.getElementById('ct-q').textContent='🏆 Quiz complete! Final score: '+score;
+      document.getElementById('ct-opts').innerHTML='';
+      return;
+    }
+    if(timerInt)clearInterval(timerInt);
+    timerW=100;
+    const q=qs[idx++];
+    document.getElementById('ct-q').textContent=q.q;
+    document.getElementById('ct-fb').textContent='';
+    const opts=document.getElementById('ct-opts');opts.innerHTML='';
+    q.opts.forEach((o,i)=>{
+      const btn=document.createElement('button');btn.className='se-option';btn.textContent=o;
+      btn.onclick=()=>{
+        clearInterval(timerInt);
+        opts.querySelectorAll('button').forEach(b=>b.style.pointerEvents='none');
+        if(i===q.ans){const pts=Math.ceil(timerW/10)*2;score+=pts;
+          document.getElementById('ct-fb').textContent='✅ +'+pts+' pts';
+          document.getElementById('ct-fb').className='feedback good';
+          document.getElementById('ct-score').textContent='Score: '+score;}
+        else{document.getElementById('ct-fb').textContent='❌ Wrong!';document.getElementById('ct-fb').className='feedback bad';}
+        setTimeout(window.ctNext,900);
+      };
+      opts.appendChild(btn);
+    });
+    timerInt=setInterval(()=>{
+      timerW-=2;
+      const bar=document.getElementById('ct-tbar');
+      bar.style.width=timerW+'%';
+      bar.style.background=timerW>50?'var(--green)':timerW>20?'var(--orange)':'var(--red)';
+      if(timerW<=0){clearInterval(timerInt);
+        document.getElementById('ct-fb').textContent='⏰ Too slow!';
+        opts.querySelectorAll('button').forEach(b=>b.style.pointerEvents='none');
+        setTimeout(window.ctNext,800);}
+    },100);
+  };
+}},
+
+/* 22 ─ BRUTE FORCE DEFENDER */
+{id:'bf',title:'Brute Force Defender',icon:'🔨',bg:'#1a0a0d',tag:'hard',desc:'Lock out attackers trying to brute-force your server!',
+html:`
+<div style="font-size:.75rem;color:var(--text-dim);margin-bottom:4px;">Attempts are coming in! Block IPs that exceed 3 failed logins.</div>
+<div id="bf-log" style="height:90px;overflow-y:auto;background:var(--surface);border-radius:8px;padding:8px;font-family:'Share Tech Mono',monospace;font-size:.65rem;border:1px solid var(--border);"></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;" id="bf-ips"></div>
+<div style="display:flex;gap:8px;">
+  <button class="btn btn-primary" onclick="bfStart()">▶ Start Attack</button>
+  <span class="score-badge" id="bf-score">Blocked: 0</span>
+</div>`,
+init(){
+  const ips=['192.168.1.1','10.0.0.5','172.16.0.3','203.0.113.7','198.51.100.2','185.220.101.5'];
+  let counts={},blocked=[],score=0,logInt=null;
+  window.bfStart=function(){
+    counts={};blocked=[];score=0;
+    document.getElementById('bf-log').innerHTML='';
+    document.getElementById('bf-ips').innerHTML='';
+    document.getElementById('bf-score').textContent='Blocked: 0';
+    if(logInt)clearInterval(logInt);
+    logInt=setInterval(()=>{
+      const ip=pick(ips);if(blocked.includes(ip))return;
+      counts[ip]=(counts[ip]||0)+1;
+      const log=document.getElementById('bf-log');
+      const line=document.createElement('div');
+      line.style.color=counts[ip]>=3?'var(--red)':'var(--text-dim)';
+      line.textContent=new Date().toLocaleTimeString()+' FAIL login from '+ip+' ('+counts[ip]+'x)';
+      log.appendChild(line);log.scrollTop=log.scrollHeight;
+      // update IP buttons
+      const ipDiv=document.getElementById('bf-ips');
+      let btn=document.getElementById('bfip-'+ip.replace(/\./g,'-'));
+      if(!btn){
+        btn=document.createElement('button');btn.id='bfip-'+ip.replace(/\./g,'-');
+        btn.className='btn btn-warn';btn.style.fontSize='.65rem';btn.style.padding='4px 8px';
+        btn.textContent=ip+' ('+counts[ip]+')';
+        btn.onclick=()=>{
+          if(counts[ip]>=3){blocked.push(ip);score+=10;
+            btn.className='btn btn-danger';btn.textContent='🔒 '+ip;btn.disabled=true;
+            document.getElementById('bf-score').textContent='Blocked: '+score;}
+          else{btn.style.background='var(--orange)';
+            const info=document.createElement('div');info.className='feedback bad';
+            info.textContent='⚠️ Only '+counts[ip]+' attempts — not enough to block yet!';
+            document.getElementById('bf-ips').after(info);setTimeout(()=>info.remove(),1200);}
+        };
+        ipDiv.appendChild(btn);
+      }else{btn.textContent=ip+' ('+counts[ip]+')';}
+    },600);
+  };
+}},
+
+/* 23 ─ CYBER WORD MATCH */
+{id:'wm2',title:'Cyber Word Match',icon:'🧩',bg:'#0d1a1a',tag:'easy',desc:'Match cybersecurity terms to their definitions!',
+html:`
+<div class="match-grid" id="wm2-grid"></div>
+<button class="btn btn-primary" onclick="wm2New()" style="margin-top:8px;">↺ New Round</button>
+<div class="feedback" id="wm2-fb"></div>
+<div class="score-badge" id="wm2-score">Matched: 0</div>`,
+init(){
+  const pairs=[
+    {term:'Malware',def:'Malicious software'},
+    {term:'Firewall',def:'Network traffic filter'},
+    {term:'Phishing',def:'Fake email scam'},
+    {term:'Encryption',def:'Data scrambling'},
+    {term:'Botnet',def:'Infected device network'},
+    {term:'Trojan',def:'Disguised malware'},
+    {term:'Rootkit',def:'Hidden system access'},
+    {term:'Zero-day',def:'Unpatched exploit'},
+  ];
+  let selected=null,matched=0,score=0;
+  window.wm2New=function(){
+    selected=null;matched=0;
+    const usedPairs=shuffle(pairs).slice(0,4);
+    const grid=document.getElementById('wm2-grid');grid.innerHTML='';
+    document.getElementById('wm2-fb').textContent='';
+    const terms=shuffle(usedPairs.map(p=>({text:p.term,type:'term',pair:p.term})));
+    const defs=shuffle(usedPairs.map(p=>({text:p.def,type:'def',pair:p.term})));
+    [...terms,...defs].forEach(item=>{
+      const d=document.createElement('div');d.className='match-item';d.textContent=item.text;
+      d.dataset.type=item.type;d.dataset.pair=item.pair;
+      d.onclick=()=>{
+        if(d.classList.contains('matched'))return;
+        if(!selected){selected=d;d.classList.add('selected');}
+        else if(selected===d){selected=null;d.classList.remove('selected');}
+        else{
+          if(selected.dataset.pair===d.dataset.pair&&selected.dataset.type!==d.dataset.type){
+            selected.classList.remove('selected');selected.classList.add('matched');
+            d.classList.add('matched');matched++;score+=5;
+            document.getElementById('wm2-fb').textContent='✅ Match!';
+            document.getElementById('wm2-fb').className='feedback good';
+            document.getElementById('wm2-score').textContent='Matched: '+score;
+            selected=null;
+            if(matched===4){document.getElementById('wm2-fb').textContent='🏆 All matched! +20 bonus';score+=20;
+              document.getElementById('wm2-score').textContent='Score: '+score;
+              setTimeout(window.wm2New,1200);}
+          }else{
+            document.getElementById('wm2-fb').textContent='❌ Not a match!';
+            document.getElementById('wm2-fb').className='feedback bad';
+            selected.classList.remove('selected');selected=null;
+          }
+        }
+      };
+      grid.appendChild(d);
+    });
+  };
+  window.wm2New();
+}},
+
+/* 24 ─ HASH CRACKER CHALLENGE */
+{id:'hc',title:'Hash Cracker',icon:'#️⃣',bg:'#0d0d1a',tag:'hard',desc:'Which plain text matches the given hash?',
+html:`
+<div class="cipher-display" id="hc-hash" style="font-size:.75rem;letter-spacing:.05em;word-break:break-all;">…</div>
+<div style="font-size:.7rem;color:var(--text-dim);margin:4px 0;">Algorithm: <span id="hc-algo">MD5</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0;" id="hc-opts"></div>
+<div class="feedback" id="hc-fb"></div>
+<div class="score-badge" id="hc-score">0 / 0</div>`,
+init(){
+  // pre-computed hashes for simplicity
+  const challenges=[
+    {hash:'5f4dcc3b5aa765d61d8327deb882cf99',algo:'MD5',correct:'password',opts:['password','qwerty','dragon','letmein']},
+    {hash:'e10adc3949ba59abbe56e057f20f883e',algo:'MD5',correct:'123456',opts:['000000','123456','654321','111111']},
+    {hash:'25f9e794323b453885f5181f1b624d0b',algo:'MD5',correct:'123456789',opts:['12345678','987654321','123456789','password1']},
+    {hash:'d8578edf8458ce06fbc5bb76a58c5ca4',algo:'MD5',correct:'qwerty',opts:['qwerty','monkey','football','baseball']},
+  ];
+  let correct=0,total=0;
+  window.hcNext=function(){
+    const c=pick(challenges);
+    document.getElementById('hc-hash').textContent=c.hash;
+    document.getElementById('hc-algo').textContent=c.algo;
+    const opts=document.getElementById('hc-opts');opts.innerHTML='';
+    shuffle(c.opts).forEach(o=>{
+      const btn=document.createElement('button');btn.className='btn btn-purple';btn.textContent=o;
+      btn.onclick=()=>{
+        total++;opts.querySelectorAll('button').forEach(b=>b.disabled=true);
+        const fb=document.getElementById('hc-fb');
+        if(o===c.correct){correct++;fb.textContent='✅ Cracked! "'+o+'" → '+c.hash.slice(0,12)+'…';
+          fb.className='feedback good';}
+        else{fb.textContent='❌ Wrong! Answer: '+c.correct;fb.className='feedback bad';}
+        document.getElementById('hc-score').textContent=correct+' / '+total;
+        setTimeout(window.hcNext,1500);
+      };
+      opts.appendChild(btn);
+    });
+    document.getElementById('hc-fb').textContent='';
+  };
+  window.hcNext();
+}},
+
+/* 25 ─ INCIDENT RESPONDER */
+{id:'ir',title:'Incident Responder',icon:'🚨',bg:'#1a0505',tag:'hard',desc:'Respond to live cyber incidents in the right order!',
+html:`
+<div id="ir-scenario" style="font-size:.78rem;line-height:1.5;color:var(--text);background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--border);margin-bottom:8px;">…</div>
+<div id="ir-steps" style="font-size:.72rem;color:var(--text-dim);margin-bottom:4px;">Drag or click steps in correct order:</div>
+<div id="ir-opts" style="display:flex;flex-direction:column;gap:4px;"></div>
+<div id="ir-selected" style="margin:6px 0;min-height:28px;display:flex;flex-wrap:wrap;gap:4px;"></div>
+<div style="display:flex;gap:8px;">
+  <button class="btn btn-primary" onclick="irCheck()">✅ Submit Response</button>
+  <button class="btn btn-warn" onclick="irNew()">↺ New Incident</button>
+</div>
+<div class="feedback" id="ir-fb"></div>
+<div class="score-badge" id="ir-score">Score: 0</div>`,
+init(){
+  const incidents=[
+    {scenario:"🚨 Ransomware detected on employee laptop. Files are being encrypted.",
+     steps:['Isolate the machine','Notify IT Security','Preserve logs','Remove malware','Restore from backup'],
+     correct:[0,1,2,3,4]},
+    {scenario:"⚠️ User reports suspicious login alert from unknown country.",
+     steps:['Reset password','Enable 2FA','Check login logs','Alert user','Review session tokens'],
+     correct:[2,0,3,1,4]},
+    {scenario:"🔴 DDoS attack detected — website unreachable.",
+     steps:['Enable rate limiting','Contact ISP','Activate DDoS protection','Analyse traffic','Document the attack'],
+     correct:[2,0,3,1,4]},
+  ];
+  let score=0,current=null,selected=[];
+  window.irNew=function(){
+    current=pick(incidents);selected=[];
+    document.getElementById('ir-scenario').textContent=current.scenario;
+    document.getElementById('ir-selected').innerHTML='';
+    document.getElementById('ir-fb').textContent='';
+    const opts=document.getElementById('ir-opts');opts.innerHTML='';
+    shuffle(current.steps).forEach((step,i)=>{
+      const btn=document.createElement('button');btn.className='se-option';btn.textContent=(i+1)+'. '+step;
+      btn.dataset.step=step;
+      btn.onclick=()=>{
+        if(btn.disabled)return;
+        selected.push(step);btn.disabled=true;btn.style.opacity='.4';
+        const tag=document.createElement('span');
+        tag.style.cssText='background:rgba(0,245,255,.1);border:1px solid var(--cyan);border-radius:4px;padding:3px 8px;font-size:.65rem;color:var(--cyan);font-family:"Share Tech Mono",monospace;';
+        tag.textContent=selected.length+'. '+step;
+        document.getElementById('ir-selected').appendChild(tag);
+      };
+      opts.appendChild(btn);
+    });
+  };
+  window.irCheck=function(){
+    if(selected.length<current.steps.length){
+      document.getElementById('ir-fb').textContent='⚠️ Select all steps first!';return;}
+    const correctOrder=current.correct.map(i=>current.steps[i]);
+    const allCorrect=correctOrder.every((s,i)=>s===selected[i]);
+    const fb=document.getElementById('ir-fb');
+    if(allCorrect){score+=25;fb.textContent='🏆 Perfect response! +25 pts';fb.className='feedback good';}
+    else{
+      let pts=0;
+      correctOrder.forEach((s,i)=>{if(s===selected[i])pts+=4;});
+      score+=pts;fb.textContent=`✅ Partial: ${pts} pts. Correct order: ${correctOrder.join(' → ')}`;
+      fb.className='feedback info';
+    }
+    document.getElementById('ir-score').textContent='Score: '+score;
+    setTimeout(window.irNew,2000);
+  };
+  window.irNew();
+}}
+
+];
+
+/* ════ RENDER CARDS ════ */
+const grid=document.getElementById('gamesGrid');
+games.forEach((g,i)=>{
+  const card=document.createElement('div');
+  card.className='game-card';
+  card.style.animationDelay=(i*.06)+'s';
+  const tagClass=g.tag==='easy'?'tag-easy':g.tag==='med'?'tag-med':'tag-hard';
+  card.innerHTML=`
+    <div class="card-header">
+      <div class="card-icon" style="background:${g.bg}">${g.icon}</div>
+      <div>
+        <div class="card-title">${g.title}</div>
+        <div class="card-desc">${g.desc}</div>
+        <span class="tag ${tagClass}">${g.tag}</span>
+      </div>
+    </div>
+    <div class="game-area" id="area-${g.id}">${g.html}</div>`;
+  grid.appendChild(card);
+  // init after mount
+  setTimeout(()=>{ try{g.init&&g.init();}catch(e){console.error(g.id,e);} },50+i*10);
+});
+</script>
+</body>
+</html>
