@@ -1,146 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber Quiz</title>
-
-<style>
-body {
-    background-image: url("images/bg.png") !important;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    margin: 0;
-    font-family: Arial;
-    color: white;
-}
-
-/* NAVBAR */
-#nav {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 30px;
-    padding: 20px 40px;
-    background: rgba(2, 6, 23, 0.9);
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-#nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 20px; /* increased */
-}
-
-#nav a:hover {
-    color: #38bdf8;
-}
-
-/* QUIZ CONTAINER */
-#quiz-container {
-    margin-top: 130px;
-    text-align: center;
-    animation: fadeIn 1s ease-in-out;
-}
-
-/* HEADING */
-h1 {
-    font-size: 36px;
-}
-
-/* QUESTION */
-#question {
-    font-size: 30px; /* bigger */
-    margin-bottom: 25px;
-    color: #38bdf8;
-    font-weight: bold;
-}
-
-/* OPTIONS */
-.option {
-    display: block;
-    margin: 15px auto;
-    padding: 16px;
-    width: 65%;
-    font-size: 18px;
-    background: #1e293b;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.option:hover {
-    background: #38bdf8;
-    transform: scale(1.05);
-}
-
-/* NAV BUTTONS */
-.nav-btn {
-    margin: 20px;
-    padding: 12px 28px;
-    font-size: 16px;
-    background: #38bdf8;
-    border: none;
-    color: black;
-    cursor: pointer;
-    border-radius: 6px;
-    font-weight: bold;
-}
-
-.nav-btn:hover {
-    background: #0ea5e9;
-}
-
-/* SCORE */
-#quiz-container p {
-    font-size: 22px;
-    margin-top: 20px;
-}
-
-/* POPUP */
-#popup {
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #020617;
-    padding: 25px;
-    font-size: 20px;
-    border: 2px solid #38bdf8;
-    display: none;
-    animation: pop 0.4s ease;
-}
-
-/* ANIMATIONS */
-@keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-
-@keyframes pop {
-    from {transform: scale(0.5) translate(-50%, -50%);}
-    to {transform: scale(1) translate(-50%, -50%);}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Awareness Platform</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  
+    <div id="main">
 
-<!-- NAV -->
-<div id="nav">
-    <a href="index.html">Home</a>
-    <a href="awareness.html">Awareness</a>
-    <a href="quiz.html">Quiz</a>
-    <a href="tools.html">Tools</a>
-    <a href="#">Alert</a>
-</div>
+        <div id="nav">
+            <div id="logo"><img src="images/logo.png" alt=""></div>
+            <div class="text"><a href="index.html">Home</a></div>
+            <div class="text"><a href="awareness.html">Awareness</a></div>
+            <div class="text"><a href="quiz.html">Quiz</a></div>
+            <div class="text"><a href="tools.html">Tools</a></div>
+            <div class="text"><p>Alert</p></div>
+            <div class="text">
+                <a href="login.html"><button>Login</button></a>
+            </div>
+        </div>
+        <div class="robots-side img">
+            <img src="images/quiz_robot.png" class="robot-img">
+        </div>
 
 <!-- QUIZ -->
 <div id="quiz-container">
@@ -160,6 +43,7 @@ h1 {
 
     <p>Score: <span id="score">0</span></p>
 </div>
+    </div>
 
 <div id="popup"></div>
 
