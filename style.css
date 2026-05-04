@@ -609,9 +609,9 @@ text-decoration:none;
 }
 
 h1{
-    font-size:38px;
+    font-size:50px;
     margin-bottom:20px;
-    color: white;
+    color:rgb(40, 214, 214);
 }
 
 #question{
@@ -691,7 +691,7 @@ h1{
     font-size:35px;
     margin-top:20px;
     font-weight: 400;
-    color: rgb(150, 239, 246);
+    color: rgb(236, 244, 245);
 }
 
 /* POPUP */

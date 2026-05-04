@@ -31,10 +31,54 @@ body{
 }
 
 /* ── STARFIELD ── */
-#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite;}
-@keyframes twinkle{0%,100%{opacity:.1;}50%{opacity:.9;}}
+#stars{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+}
 
+/* STAR STYLE */
+.star{
+    position:absolute;
+    border-radius:50%;
+    background:#fff;
+
+    /* Glow */
+    box-shadow: 
+        0 0 6px #fff,
+        0 0 12px #60a5fa,
+        0 0 20px #60a5fa;
+
+    /* Smooth animation */
+    animation: twinkle var(--d,3s) ease-in-out infinite,
+               float var(--f,10s) linear infinite;
+
+    filter: blur(0.5px);
+}
+
+/* TWINKLE EFFECT */
+@keyframes twinkle{
+    0%,100%{
+        opacity:.2;
+        transform: scale(0.8);
+    }
+    50%{
+        opacity:1;
+        transform: scale(1.2);
+    }
+}
+
+/* FLOATING EFFECT */
+@keyframes float{
+    0%{
+        transform: translate(0,0);
+    }
+    100%{
+        transform: translate(-50px,-100vh);
+    }
+}
 /* ── NAV ── */
 nav{
   position:fixed;top:0;right:0;z-index:100;
