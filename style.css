@@ -142,16 +142,16 @@ button:hover{
     position:absolute;
     right:-200px;
     bottom:8px;
-    animation:moveRobot 4s ease forwards;
+    animation:moveRobot 2s ease forwards;
 }
 
 .robot img{
-    width:220px;
+    width:230px;
 }
 
 @keyframes moveRobot{
     from{ left:-50px; }
-    to{ left:200px; }
+    to{ left:400px; }
 }
 
 /* ================= FEATURE SECTION ================= */
@@ -306,6 +306,7 @@ text-decoration:none;
 
 .robot-side img{
     width:250px;
+     filter: drop-shadow(0 0 10px #38bdf8);
     
 }
 
@@ -328,6 +329,7 @@ text-decoration:none;
 
 .robotside img{
     width:250px;
+     filter: drop-shadow(0 0 10px #38bdf8);
     
 }
 .register-box{
@@ -554,7 +556,7 @@ text-decoration:none;
 }
 
 .tool-box:hover .tool-info h3{
-    text-shadow:0 0 8px #19dede;
+    text-shadow:0 0 8px #58f0f0;
 }
 
 .tool-info p{
@@ -620,23 +622,47 @@ h1{
 }
 
 /* OPTIONS */
-.option{
-    display:block;
-    margin:15px auto;
-    padding:16px;
-    width:60%;
-    font-size:20px;
-    background:#1e293b;
-    border:none;
-    color:white;
-    cursor:pointer;
-    border-radius:8px;
-    transition:0.3s;
+.option {
+    display: block;
+    margin: 15px auto;
+    padding: 16px;
+    width: 60%;
+    font-size: 20px;
+    background: #1e293b;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+
+    position: relative;   /* IMPORTANT */
+    overflow: hidden;     /* keeps effect inside button */
+}
+
+.option::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;          /* match full button width */
+    height: 100%;         /* match full button height */
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(0, 255, 255, 0.6),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.option:hover::before {
+    left: 100%;
 }
 
 .option:hover{
     background:#38bdf8;
     transform:scale(1.05);
+    
 }
 
 /* NAV BUTTONS */
@@ -726,7 +752,7 @@ h1{
     }
 }
 
-/* Hover wave effect */
+
 .robot-img:hover {
     animation: floatRobot 4s ease-in-out infinite,
               
